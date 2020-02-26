@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}	
+
+	<form action="{{url_for('paragonySDS')}}" method="post" style="width: 300px; margin-left: 22em;">
+		<div class="input-group mb-3">
+			<input type="text" class="form-control" name="imap" placeholder="Serwer IMAP" value="imap.gmail.com"> <br>
+		</div>
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<span class="input-group-text" id="basic-addon1">@</span>
+			</div>
+			<input type="email" class="form-control" aria-describedby="basic-addon1" name="login" placeholder="Login (email)">
+		</div>
+		<div class="input-group mb-3">
+			<input type="password" class="form-control" name="password" placeholder="Hasło"> <br>
+		</div>
+		<div class="input-group mb-3">
+			<input type="text" class="form-control" name="folder" value="" placeholder="Folder (inbox)"> <br>
+		</div>
+		<div class="input-group mb-3">
+			<input type="text" class="form-control" name="device" placeholder="Nazwa kasy fiskalnej"> <br>
+		</div>
+		<div class="input-group mb-3">
+			<input type="date" class="form-control" name="data" placeholder=""> <br>
+		</div>
+		<button type="submit" class="btn btn-primary">Raport</button>
+		<input type="button" class="btn btn-primary" value="Wróć" onClick="location.href='{{url_for('index')}}';" />
+
+	</form>
+
+	<br>
+		{% if printout["error"] != "" %}
+			<div class="alert alert-danger" role="alert">
+				{{printout["error"]}}	
+			</div>
+		{% elif printout["date"] != "0000-00-00" %}
+			<div class="alert alert-secondary" role="alert">
+				<hr>
+				Data: {{printout["date"]}} <br>
+				Raporty: {{printout["repCnt"]}} <br>
+				Płatności kartą: {{printout["cnt_card"]}} <br>
+				Płatności gotówką: {{printout["cnt_cash"]}} <br>
+				<hr>
+				<b>Karta</b>:<br>
+				{% for i in range(5): %}
+					PTU {{ "ABCDE"[i] }}: {{printout["card_tax"][i]}} <br>
+				{% endfor %}
+				{% for i in range(5): %}
+					Netto {{ "ABCDE"[i] }}: {{printout["card_netABCDE"][i]}} <br>
+				{% endfor %}
+				Netto: {{printout["card_net"]}} <br>
+				Brutto: {{printout["card_grs"]}} <br>
+				<hr>
+				<b>Gotówka</b>:<br>
+				{% for i in range(5): %}
+					PTU {{ "ABCDE"[i] }}: {{printout["cash_tax"][i]}} <br>
+				{% endfor %}
+				{% for i in range(5): %}
+					Netto {{ "ABCDE"[i] }}: {{printout["cash_netABCDE"][i]}} <br>
+				{% endfor %}
+				Netto: {{printout["cash_net"]}} <br>
+				Brutto: {{printout["cash_grs"]}} <br>
+				<hr>
+				<b>Podsumowanie</b><br>
+				PTU: {{printout["charge_tax"]}} <br>
+				Netto: {{printout["charge_net"]}} <br>
+				Brutto: {{printout["charge_grs"]}} <br>
+				<hr>
+			</div>
+		{% endif %}
+
+{% endblock %}
+
